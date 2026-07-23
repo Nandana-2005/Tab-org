@@ -1,12 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const stashBtn = document.getElementById('stashBtn');
   const groupNameInput = document.getElementById('groupName');
   const stashList = document.getElementById('stashList');
   const colorPicker = document.getElementById('colorPicker');
+  const tabListContainer = document.getElementById('tabList');
+  const toggleSelectAllBtn = document.getElementById('toggleSelectAllBtn');
 
-  let selectedColor = 'blue';
+  let selectedColor = 'veranda-blue';
+  let currentTabs = [];
 
-  // Handle color selection
+  // Color selection
   colorPicker.addEventListener('click', (e) => {
     if (e.target.classList.contains('color-option')) {
       document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
@@ -15,57 +18,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // 1. Fetch current open tabs
+  currentTabs = await chrome.tabs.query({ currentWindow: true });
+  const stashableTabs = currentTabs.filter(tab => !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://'));
+  
+  renderTabChecklist(stashableTabs);
   renderStashes();
 
-  // 1. Stash current tabs
-  stashBtn.addEventListener('click', async () => {
-    const name = groupNameInput.value.trim() || `Session (${new Date().toLocaleDateString()})`;
-    
-    const tabs = await chrome.tabs.query({ currentWindow: true });
-    const validTabs = tabs.filter(tab => !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://'));
+  // Toggle Select / Unselect All
+  let allSelected = true;
+  toggleSelectAllBtn.addEventListener('click', () => {
+    allSelected = !allSelected;
+    const checkboxes = tabListContainer.querySelectorAll('.tab-checkbox');
+    checkboxes.forEach(cb => cb.checked = allSelected);
+    toggleSelectAllBtn.textContent = allSelected ? 'Unselect All' : 'Select All';
+  });
 
-    if (validTabs.length === 0) return;
+  // Render Open Tabs Checklist
+  function renderTabChecklist(tabs) {
+    tabListContainer.innerHTML = '';
+
+    if (tabs.length === 0) {
+      tabListContainer.innerHTML = '<div style="font-size:12px; color:#94a3b8; text-align:center; padding:6px;">No stashable tabs open.</div>';
+      return;
+    }
+
+    tabs.forEach(tab => {
+      const row = document.createElement('label');
+      row.className = 'tab-item';
+
+      const faviconUrl = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(tab.url)}&size=16`;
+
+      row.innerHTML = `
+        <input type="checkbox" class="tab-checkbox" data-tab-id="${tab.id}" checked />
+        <img src="${faviconUrl}" class="favicon-icon" alt="" onerror="this.style.display='none'">
+        <span class="tab-title">${escapeHtml(tab.title || 'Untitled Tab')}</span>
+      `;
+
+      tabListContainer.appendChild(row);
+    });
+  }
+
+  // 2. Stash selected tabs
+  stashBtn.addEventListener('click', async () => {
+    const checkedBoxes = Array.from(document.querySelectorAll('.tab-checkbox:checked'));
+    
+    const selectedTabIds = checkedBoxes
+      .map(cb => parseInt(cb.getAttribute('data-tab-id'), 10))
+      .filter(id => !isNaN(id));
+
+    if (selectedTabIds.length === 0) {
+      alert('Please select at least one tab to stash!');
+      return;
+    }
+
+    const tabsToStash = stashableTabs.filter(tab => selectedTabIds.includes(tab.id));
+    const name = groupNameInput.value.trim() || `Session (${new Date().toLocaleDateString()})`;
 
     const newStash = {
       id: Date.now().toString(),
       name: name,
       color: selectedColor,
-      urls: validTabs.map(tab => tab.url)
+      urls: tabsToStash.map(tab => tab.url)
     };
 
     const { stashes = [] } = await chrome.storage.local.get('stashes');
     stashes.unshift(newStash);
     await chrome.storage.local.set({ stashes });
 
-    // Close stashed tabs and open a fresh new tab
-    const tabIdsToClose = validTabs.map(tab => tab.id);
-    await chrome.tabs.create({});
-    await chrome.tabs.remove(tabIdsToClose);
+    // Close only the checked/stashed tabs
+    await chrome.tabs.remove(selectedTabIds);
 
     groupNameInput.value = '';
+    
+    // Refresh open tabs list and stashed list
+    const remainingTabs = await chrome.tabs.query({ currentWindow: true });
+    const newStashable = remainingTabs.filter(tab => !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://'));
+    renderTabChecklist(newStashable);
     renderStashes();
   });
 
-  // 2. Render stashes with favicons
+  // 3. Render stashes with favicons
   async function renderStashes() {
     const { stashes = [] } = await chrome.storage.local.get('stashes');
     stashList.innerHTML = '';
 
     if (stashes.length === 0) {
-      stashList.innerHTML = '<p style="font-size:12px; color:#888;">No saved tab groups yet.</p>';
+      stashList.innerHTML = '<p style="font-size:12px; color:#94a3b8; text-align:center;">No saved tab groups yet.</p>';
       return;
     }
 
     const colorMap = {
-      blue: '#1a73e8', red: '#d93025', yellow: '#f9ab00',
-      green: '#188038', purple: '#a142f4', cyan: '#24c1e0'
+      'veranda-blue': '#6BB1AD',
+      'sky-cloud': '#A7BCBD',
+      'lychee': '#EDECDB',
+      'melon': '#E5A9A9',
+      'cupid-pink': '#E6748E'
     };
 
     stashes.forEach(stash => {
       const card = document.createElement('div');
       card.className = 'stash-card';
 
-      // Build favicons HTML using Chrome's native favicon API
       const faviconsHtml = stash.urls.slice(0, 8).map(url => {
         const faviconUrl = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(url)}&size=16`;
         return `<img src="${faviconUrl}" class="favicon-icon" alt="icon" onerror="this.style.display='none'">`;
@@ -74,15 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
       card.innerHTML = `
         <div class="stash-header">
           <span>
-            <span class="group-badge" style="background-color: ${colorMap[stash.color] || '#1a73e8'};"></span>
+            <span class="group-badge" style="background-color: ${colorMap[stash.color] || '#6BB1AD'};"></span>
             ${escapeHtml(stash.name)}
           </span>
-          <span style="font-size:11px; color:#777;">${stash.urls.length} tabs</span>
+          <span style="font-size:11px; color:#94a3b8;">${stash.urls.length} tabs</span>
         </div>
         
         <div class="favicon-list">
           ${faviconsHtml}
-          ${stash.urls.length > 8 ? `<span style="font-size:10px; color:#888;">+${stash.urls.length - 8} more</span>` : ''}
+          ${stash.urls.length > 8 ? `<span style="font-size:10px; color:#94a3b8;">+${stash.urls.length - 8} more</span>` : ''}
         </div>
 
         <div class="stash-actions">
@@ -102,25 +156,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Restore tabs as a native Chrome Tab Group
+  // 4. Restore tabs as a native Chrome Tab Group
   async function restoreAsGroup(id) {
     const { stashes = [] } = await chrome.storage.local.get('stashes');
     const stash = stashes.find(s => s.id === id);
     if (!stash) return;
 
-    // Create tabs in background
     const tabPromises = stash.urls.map(url => chrome.tabs.create({ url, active: false }));
     const createdTabs = await Promise.all(tabPromises);
     const tabIds = createdTabs.map(t => t.id);
 
-    // Bundle them into a native Chrome Tab Group
-    const groupId = await chrome.tabs.group({ tabIds });
-    await chrome.tabGroups.update(groupId, {
-      title: stash.name,
-      color: stash.color || 'blue'
-    });
+    // Map reference palette to closest native Chrome tab group colors
+    const nativeColorMap = {
+      'veranda-blue': 'cyan',
+      'sky-cloud': 'grey',
+      'lychee': 'yellow',
+      'melon': 'red',
+      'cupid-pink': 'pink'
+    };
 
-    // Delete stash from popup storage after restoring
+    if (tabIds.length > 0 && chrome.tabGroups) {
+      const groupId = await chrome.tabs.group({ tabIds });
+      await chrome.tabGroups.update(groupId, {
+        title: stash.name,
+        color: nativeColorMap[stash.color] || 'cyan'
+      });
+    }
+
     deleteStash(id);
   }
 

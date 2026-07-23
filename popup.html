@@ -8,7 +8,17 @@
   <div class="stash-container">
     <div class="title">
       Tab Stash
-      <span class="version-badge">v2.0</span>
+      <span class="version-badge">v3.0</span>
+    </div>
+
+    <!-- Tab Selection Section -->
+    <div class="tab-selection-header">
+      <span class="section-label" style="margin-bottom: 0;">Select Tabs to Group:</span>
+      <button id="toggleSelectAllBtn" type="button" class="text-link-btn">Unselect All</button>
+    </div>
+
+    <div id="tabList" class="tab-list-container">
+      <!-- Tab checkboxes dynamically injected here -->
     </div>
 
     <!-- Animated Floating Label Input -->
@@ -17,19 +27,20 @@
       <span>Group Name</span>
     </label>
 
+    <!-- Tag Color Selection (Updated Reference Swatches) -->
     <div class="color-picker-row">
-    <label>Tag Color:</label>
-    <div class="color-options" id="colorPicker">
-        <div class="color-option selected" data-color="mint" style="background:#6ee7b7;"></div>
-        <div class="color-option" data-color="emerald" style="background:#34d399;"></div>
-        <div class="color-option" data-color="green" style="background:#10b981;"></div>
-        <div class="color-option" data-color="teal-green" style="background:#059669;"></div>
-        <div class="color-option" data-color="dark-green" style="background:#047857;"></div>
-    </div>
+      <label class="section-label" style="margin-bottom: 0;">Tag Color:</label>
+      <div class="color-options" id="colorPicker">
+        <div class="color-option selected" data-color="veranda-blue" style="background:#6BB1AD;" title="Veranda Blue"></div>
+        <div class="color-option" data-color="sky-cloud" style="background:#A7BCBD;" title="Sky Cloud"></div>
+        <div class="color-option" data-color="lychee" style="background:#EDECDB;" title="Lychee"></div>
+        <div class="color-option" data-color="melon" style="background:#E5A9A9;" title="Melon"></div>
+        <div class="color-option" data-color="cupid-pink" style="background:#E6748E;" title="Cupid Pink"></div>
+      </div>
     </div>
 
-    <!-- Green Primary Submit Button -->
-    <button id="stashBtn" class="submit-btn">Stash Current Tabs</button>
+    <!-- Primary Submit Button -->
+    <button id="stashBtn" class="submit-btn">Stash Selected Tabs</button>
   </div>
 
   <hr class="divider">

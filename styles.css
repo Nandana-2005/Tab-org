@@ -1,55 +1,22 @@
 :root {
-  /* Green Palette Swatches */
-  --green-mint: #6ee7b7;
-  --green-emerald: #34d399;
-  --green-vibrant: #10b981;
-  --green-deep: #059669;
-  --green-dark: #047857;
+  /* Reference Palette HEX Colors */
+  --veranda-blue: #6BB1AD;
+  --sky-cloud: #A7BCBD;
+  --lychee: #EDECDB;
+  --melon: #E5A9A9;
+  --cupid-pink: #E6748E;
 
-  /* Existing Glass Styling Vars */
+  /* Glass Styling & Brightened Text Vars */
   --glass-bg: rgba(10, 65, 116, 0.45);
   --glass-card: rgba(0, 29, 57, 0.55);
   --glass-border: rgba(123, 189, 232, 0.35);
   --glass-border-hover: rgba(189, 216, 233, 0.6);
-  --text-primary: #f1f5f9;
-  --text-muted: #6ea2b3;
-}
-
-/* Color Picker Row */
-.color-picker-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2px 0;
-}
-
-.color-picker-row label {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.color-options {
-  display: flex;
-  gap: 8px;
-}
-
-.color-option {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.color-option:hover {
-  transform: scale(1.2);
-}
-
-/* Bright white ring glow for selected green swatch */
-.color-option.selected {
-  border-color: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
+  
+  /* Text Brightening Adjustments */
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --blue-bright: #93c5fd;
 }
 
 /* Base Layout */
@@ -77,7 +44,7 @@ body {
   gap: 12px;
 }
 
-/* Title Header (Clean Text, No Dot) */
+/* Title Header */
 .title {
   font-size: 20px;
   font-weight: 600;
@@ -86,17 +53,94 @@ body {
   align-items: center;
   justify-content: space-between;
   padding-left: 0;
-  color: var(--blue-light);
-  margin: 0 0 6px 0;
+  color: var(--text-primary);
+  margin: 0 0 2px 0;
 }
 
 .version-badge {
   font-size: 10px;
-  color: var(--text-muted);
-  background: rgba(110, 162, 179, 0.15);
+  color: var(--blue-bright);
+  background: rgba(147, 197, 253, 0.15);
   padding: 2px 8px;
   border-radius: 9999px;
-  border: 1px solid rgba(110, 162, 179, 0.3);
+  border: 1px solid rgba(147, 197, 253, 0.3);
+}
+
+/* Tab Selection Checklist Component */
+.tab-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-link-btn {
+  background: none;
+  border: none;
+  color: var(--blue-bright);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0;
+  font-weight: 500;
+}
+
+.text-link-btn:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+.tab-list-container {
+  max-height: 125px;
+  overflow-y: auto;
+  background: rgba(0, 29, 57, 0.45);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tab-list-container::-webkit-scrollbar {
+  width: 4px;
+}
+.tab-list-container::-webkit-scrollbar-thumb {
+  background: rgba(147, 197, 253, 0.35);
+  border-radius: 4px;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.tab-item:hover {
+  background: rgba(147, 197, 253, 0.15);
+}
+
+.tab-item img {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.tab-title {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.tab-checkbox {
+  accent-color: var(--veranda-blue);
+  cursor: pointer;
 }
 
 /* Floating Label Input */
@@ -107,7 +151,7 @@ body {
 }
 
 .floating-label .input {
-  background-color: rgba(0, 29, 57, 0.4);
+  background-color: rgba(0, 29, 57, 0.45);
   color: #ffffff;
   width: 100%;
   padding: 18px 10px 6px 12px;
@@ -133,15 +177,15 @@ body {
 
 .floating-label .input:focus + span,
 .floating-label .input:not(:placeholder-shown) + span {
-  color: var(--blue-light);
+  color: var(--blue-bright);
   top: 4px;
   font-size: 10px;
   font-weight: 600;
 }
 
 .floating-label .input:focus {
-  border-color: var(--blue-light);
-  box-shadow: 0 0 10px rgba(123, 189, 232, 0.25);
+  border-color: var(--blue-bright);
+  box-shadow: 0 0 10px rgba(147, 197, 253, 0.25);
 }
 
 /* Color Picker Row */
@@ -152,19 +196,14 @@ body {
   padding: 2px 0;
 }
 
-.color-picker-row label {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
 .color-options {
   display: flex;
   gap: 8px;
 }
 
 .color-option {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid transparent;
@@ -177,7 +216,7 @@ body {
 
 .color-option.selected {
   border-color: #ffffff;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
 }
 
 /* Buttons */
@@ -195,13 +234,9 @@ button {
 }
 
 .submit-btn {
-  /* Translucent dark blue background derived from #0A4174 */
-  background-color: rgba(10, 65, 116, 0.45); 
-  
-  /* Bright cyan-blue text & outline */
-  color: #7bbde8; 
-  border: 1px solid rgba(123, 189, 232, 0.55);
-  
+  background-color: rgba(10, 65, 116, 0.55); 
+  color: #ffffff; 
+  border: 1px solid rgba(147, 197, 253, 0.65);
   width: 100%;
   margin-top: 4px;
   padding: 10px 16px;
@@ -215,25 +250,23 @@ button {
 }
 
 .submit-btn:hover {
-  /* Slightly richer blue fill + soft blue glow on hover */
-  background-color: rgba(10, 65, 116, 0.7);
-  border-color: rgba(189, 216, 233, 0.85);
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(123, 189, 232, 0.3);
+  background-color: rgba(10, 65, 116, 0.85);
+  border-color: rgba(189, 216, 233, 0.95);
+  box-shadow: 0 0 14px rgba(123, 189, 232, 0.4);
   transform: translateY(-1px);
 }
 
 hr.divider {
   border: 0;
-  border-top: 1px solid rgba(110, 162, 179, 0.2);
+  border-top: 1px solid rgba(147, 197, 253, 0.25);
   margin: 14px 0 10px 0;
 }
 
 .section-label {
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   margin-bottom: 8px;
   font-weight: 600;
 }
@@ -264,13 +297,14 @@ hr.divider {
   align-items: center;
   font-size: 13px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 /* Pulsing Session Dots */
 .group-badge {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   margin-right: 6px;
   position: relative;
@@ -290,23 +324,9 @@ hr.divider {
 }
 
 @keyframes sessionPulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
-}
-
-.tab-count {
-  font-size: 11px;
-  color: var(--text-muted);
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
 }
 
 .favicon-list {
@@ -320,9 +340,9 @@ hr.divider {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
   padding: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Action Buttons */
@@ -333,27 +353,24 @@ hr.divider {
 }
 
 .btn-restore {
-  background-color: rgba(123, 189, 232, 0.18);
-  color: var(--blue-light);
-  border: 1px solid rgba(123, 189, 232, 0.55);
+  background-color: rgba(147, 197, 253, 0.22);
+  color: #ffffff;
+  border: 1px solid rgba(147, 197, 253, 0.6);
 }
 
 .btn-restore:hover {
-  background-color: rgba(123, 189, 232, 0.35);
-  border-color: var(--blue-soft);
-  box-shadow: 0 0 10px rgba(123, 189, 232, 0.25);
-  color: #ffffff;
+  background-color: rgba(147, 197, 253, 0.4);
+  box-shadow: 0 0 10px rgba(147, 197, 253, 0.3);
 }
 
 .btn-delete {
-  background-color: rgba(239, 68, 68, 0.18);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.5);
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.55);
 }
 
 .btn-delete:hover {
-  background-color: rgba(239, 68, 68, 0.35);
-  border-color: rgba(248, 113, 113, 0.8);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.25);
+  background-color: rgba(239, 68, 68, 0.4);
   color: #ffffff;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
 }
