@@ -5,28 +5,36 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h2>Tab Stash <span>v2.0</span></h2>
-  
-  <div class="input-group">
-    <input type="text" id="groupName" placeholder="Session Name (e.g. Research Paper)">
-    
-    <!-- Color picker selection for Chrome Tab Group -->
-    <div class="color-picker" id="colorPicker">
-      <span style="font-size: 11px; color: #666; margin-right: 4px;">Color:</span>
-      <div class="color-option selected" data-color="blue" style="background:#1a73e8;"></div>
-      <div class="color-option" data-color="red" style="background:#d93025;"></div>
-      <div class="color-option" data-color="yellow" style="background:#f9ab00;"></div>
-      <div class="color-option" data-color="green" style="background:#188038;"></div>
-      <div class="color-option" data-color="purple" style="background:#a142f4;"></div>
-      <div class="color-option" data-color="cyan" style="background:#24c1e0;"></div>
+  <div class="stash-container">
+    <div class="title">
+      Tab Stash
+      <span class="version-badge">v2.0</span>
     </div>
 
-    <button id="stashBtn">Stash Current Tabs</button>
+    <!-- Animated Floating Label Input -->
+    <label class="floating-label">
+      <input type="text" id="groupName" class="input" placeholder=" " autocomplete="off">
+      <span>Group Name</span>
+    </label>
+
+    <div class="color-picker-row">
+    <label>Tag Color:</label>
+    <div class="color-options" id="colorPicker">
+        <div class="color-option selected" data-color="mint" style="background:#6ee7b7;"></div>
+        <div class="color-option" data-color="emerald" style="background:#34d399;"></div>
+        <div class="color-option" data-color="green" style="background:#10b981;"></div>
+        <div class="color-option" data-color="teal-green" style="background:#059669;"></div>
+        <div class="color-option" data-color="dark-green" style="background:#047857;"></div>
+    </div>
+    </div>
+
+    <!-- Green Primary Submit Button -->
+    <button id="stashBtn" class="submit-btn">Stash Current Tabs</button>
   </div>
 
-  <hr>
+  <hr class="divider">
 
-  <h3 style="font-size: 12px; color: #666; margin-bottom: 8px;">Saved Sessions</h3>
+  <div class="section-label">Saved Sessions</div>
   <div id="stashList"></div>
 
   <script src="popup.js"></script>
