@@ -3,9 +3,15 @@
   "name": "Tab Stash",
   "version": "1.0",
   "description": "Stash open tabs into organized study sessions and restore them with one click.",
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "storage", "tabGroups", "favicon"],
   "action": {
     "default_popup": "popup.html",
     "default_title": "Tab Stash"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["_favicon/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
